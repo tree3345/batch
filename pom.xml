@@ -10,7 +10,6 @@
 
     <name>lzjf_batch</name>
     <url>http://maven.apache.org</url>
-
     <properties>
         <spring.version>4.1.5.RELEASE</spring.version>
         <springbatch.version>3.0.3.RELEASE</springbatch.version>
