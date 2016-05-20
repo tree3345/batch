@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/batch"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.springframework.org/schema/batch
+    http://www.springframework.org/schema/batch/spring-batch-3.0.xsd
+    http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
+
+    <job id="generateJenFileJob" restartable="false">
+        <!--step 1:验证是否有需要生成的因子文件 enable=1 and （last_generate_date为null() or last_generate_date<data_end_Date） -->
+        <step id="validateExistNeedData">
+            <tasklet ref="validateExistNeedDataTaklet"/>
+            <next
+                    on="#{T(com.lzjf.constant.FactorTableGeneratorConstant).SUCCESS}"
+                    to="initPrepareDataStep"/>
+            <!--验证成功把成功的factorTables集合传递下去-->
+            <end on="#{T(com.lzjf.constant.FactorTableGeneratorConstant).FAIL}"/>
+            <listeners>
+                <listener ref="switchListener"></listener>
+            </listeners>
+        </step>
+
+        <!--step 2:初始化数据-->
+        <step id="initPrepareDataStep">
+            <tasklet ref="initPrepareDateTasklet"/>
+            <next
+                    on="#{T(com.lzjf.constant.FactorTableGeneratorConstant).SUCCESS}"
+                    to="generateJenFileStep"/>
+            <end on="#{T(com.lzjf.constant.FactorTableGeneratorConstant).FAIL}"/>
+            <listeners>
+                <listener ref="switchListener"></listener>
+            </listeners>
+        </step>
+        <!--step 3:执行生成因子文件操作-->
+        <step id="generateJenFileStep">
+            <!--采用多线程 16个为一组-->
+            <partition step="worker" partitioner="partitioner" handler="orderPartitionHandler" />
+            <!--  <tasklet ref="generateJenFileTasklet" task-executor="taskExecutor" throttle-limit="16">
+              </tasklet>-->
+        </step>
+    </job>
+    <step id="worker">
+        <tasklet>
+            <chunk reader="filesReader" processor="orderProcessor"
+                         writer="mysqlItemWriter" commit-interval="15" skip-limit="20">
+                <skippable-exception-classes>
+                    <include class="java.lang.Exception" />
+                </skippable-exception-classes>
+            </chunk>
+            <listeners>
+                <listener ref="orderSkipListener" />
+            </listeners>
+        </tasklet>
+    </step>
+
+    <beans:bean id="userHbBakReader"
+                class="org.mybatis.spring.batch.MyBatisPagingItemReader" scope="step">
+        <beans:property name="queryId" value="com.lz.mapper.FactorTableMapper.selectJenDataList"/>
+        <beans:property name="parameterValues">
+            <beans:map>
+                <beans:entry key="currentDate" value="#{jobParameters['currentDate']}"/>
+            </beans:map>
+        </beans:property>
+        <beans:property name="sqlSessionFactory" ref="sqlMapClient"/>
+        <beans:property name="pageSize" value="100"/>
+    </beans:bean>
+    <!-- writer -->
+    <beans:bean id="userHbBakStepWriter"
+                class="org.mybatis.spring.batch.MyBatisBatchItemWriter" scope="step">
+        <beans:property name="statementId"
+                        value="com.ropapi.mapper.JrTdLlllUserHbMapper.insert"/>
+        <beans:property name="sqlSessionFactory" ref="sqlMapClient_qz"/>
+    </beans:bean>
+    <beans:bean id="initPrepareDateTasklet" class="com.lz.generation.step.InitPrepareDateTasklet"/>
+    <beans:bean id="validateExistNeedDataTaklet" class="com.lz.generation.step.ValidateExistNeedData"/>
+    <beans:bean id="switchListener" class="com.lz.generation.step.SwitchListener"/>
+    <beans:bean id="limitDecider" class="com.lz.generation.step.LimitDecider"/>
+    <beans:bean id="generateJenFileTasklet" class="com.lz.generation.step.GenerateJenFileTasklet">
+
+    </beans:bean>
+</beans:beans>

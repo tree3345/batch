@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lz.stock.mapper.LzGpaTmpStkMapper">
+  <!-- 插入 -->
+  <insert id="insert" parameterType="com.lz.stock.model.LzGpaTmpStk" >
+    INSERT INTO
+      LZ_GPA_TMP_STK
+    (
+      MTIME,
+      INNER_CODE,
+      STOCKCODE,
+      STOCKSNAME,
+      LZJF_CODE,
+      COMCODE,
+      CNAME,
+      STK_TYPE_NAME,
+      STK_STYPE_NAME,
+      MKT_TYPE,
+      MKT_NAME,
+      LIST_SECTOR_NAME,
+      LIST_STATUS,
+      LIST_DATE,
+      LIST_ENDDATE,
+      SPECIAL_TYPE_REF,
+      SPECIAL_TYPE_NAME
+    ) VALUES (
+      #{mtime},
+      #{innerCode},
+      #{stockcode},
+      #{stocksname},
+      #{lzjfCode},
+      #{comcode},
+      #{cname},
+      #{stkTypeName},
+      #{stkStypeName},
+      #{mktType},
+      #{mktName},
+      #{listSectorName},
+      #{listStatus},
+      #{listDate},
+      #{listEnddate},
+      #{specialTypeRef},
+      #{specialTypeName}
+    )
+  </insert>
+  <!-- 删除通过主键 -->
+  <delete id="deleteByPrimaryKey" parameterType="Integer" >
+    DELETE
+    FROM
+      LZ_GPA_TMP_STK
+    WHERE
+      INNER_CODE = #{innerCode}
+  </delete>
+  <!-- 单件更新通过主键(部分更新) -->
+  <update id="updateByPrimaryKey" parameterType="com.lz.stock.model.LzGpaTmpStk" >
+    UPDATE
+      LZ_GPA_TMP_STK
+    <set>
+      <if test="mtime != null">
+        MTIME = #{mtime},
+      </if>
+      <if test="stockcode != null">
+        STOCKCODE = #{stockcode},
+      </if>
+      <if test="stocksname != null">
+        STOCKSNAME = #{stocksname},
+      </if>
+      <if test="lzjfCode != null">
+        LZJF_CODE = #{lzjfCode},
+      </if>
+      <if test="comcode != null">
+        COMCODE = #{comcode},
+      </if>
+      <if test="cname != null">
+        CNAME = #{cname},
+      </if>
+      <if test="stkTypeName != null">
+        STK_TYPE_NAME = #{stkTypeName},
+      </if>
+      <if test="stkStypeName != null">
+        STK_STYPE_NAME = #{stkStypeName},
+      </if>
+      <if test="mktType != null">
+        MKT_TYPE = #{mktType},
+      </if>
+      <if test="mktName != null">
+        MKT_NAME = #{mktName},
+      </if>
+      <if test="listSectorName != null">
+        LIST_SECTOR_NAME = #{listSectorName},
+      </if>
+      <if test="listStatus != null">
+        LIST_STATUS = #{listStatus},
+      </if>
+      <if test="listDate != null">
+        LIST_DATE = #{listDate},
+      </if>
+      <if test="listEnddate != null">
+        LIST_ENDDATE = #{listEnddate},
+      </if>
+      <if test="specialTypeRef != null">
+        SPECIAL_TYPE_REF = #{specialTypeRef},
+      </if>
+      <if test="specialTypeName != null">
+        SPECIAL_TYPE_NAME = #{specialTypeName},
+      </if>
+    </set>
+    WHERE
+      INNER_CODE = #{innerCode}
+  </update>
+  <!-- 单件更新通过主键(全更新) -->
+  <update id="updateAllByPrimaryKey" parameterType="com.lz.stock.model.LzGpaTmpStk" >
+    UPDATE
+      LZ_GPA_TMP_STK
+    SET
+      MTIME = #{mtime},
+      STOCKCODE = #{stockcode},
+      STOCKSNAME = #{stocksname},
+      LZJF_CODE = #{lzjfCode},
+      COMCODE = #{comcode},
+      CNAME = #{cname},
+      STK_TYPE_NAME = #{stkTypeName},
+      STK_STYPE_NAME = #{stkStypeName},
+      MKT_TYPE = #{mktType},
+      MKT_NAME = #{mktName},
+      LIST_SECTOR_NAME = #{listSectorName},
+      LIST_STATUS = #{listStatus},
+      LIST_DATE = #{listDate},
+      LIST_ENDDATE = #{listEnddate},
+      SPECIAL_TYPE_REF = #{specialTypeRef},
+      SPECIAL_TYPE_NAME = #{specialTypeName}
+    WHERE
+      INNER_CODE = #{innerCode}
+  </update>
+  <!-- 单件检索通过主键 -->
+  <select id="selectOneByPrimaryKey" parameterType="Integer" resultType="com.lz.stock.model.LzGpaTmpStk" >
+    SELECT
+      MTIME AS mtime,
+      INNER_CODE AS innerCode,
+      STOCKCODE AS stockcode,
+      STOCKSNAME AS stocksname,
+      LZJF_CODE AS lzjfCode,
+      COMCODE AS comcode,
+      CNAME AS cname,
+      STK_TYPE_NAME AS stkTypeName,
+      STK_STYPE_NAME AS stkStypeName,
+      MKT_TYPE AS mktType,
+      MKT_NAME AS mktName,
+      LIST_SECTOR_NAME AS listSectorName,
+      LIST_STATUS AS listStatus,
+      LIST_DATE AS listDate,
+      LIST_ENDDATE AS listEnddate,
+      SPECIAL_TYPE_REF AS specialTypeRef,
+      SPECIAL_TYPE_NAME AS specialTypeName
+    FROM
+      LZ_GPA_TMP_STK
+    WHERE
+      INNER_CODE = #{innerCode}
+  </select>
+  <!-- 检索列表 -->
+  <select id="selectList" parameterType="com.lz.stock.model.LzGpaTmpStk" resultType="com.lz.stock.model.LzGpaTmpStk" >
+    SELECT
+      MTIME AS mtime,
+      INNER_CODE AS innerCode,
+      STOCKCODE AS stockcode,
+      STOCKSNAME AS stocksname,
+      LZJF_CODE AS lzjfCode,
+      COMCODE AS comcode,
+      CNAME AS cname,
+      STK_TYPE_NAME AS stkTypeName,
+      STK_STYPE_NAME AS stkStypeName,
+      MKT_TYPE AS mktType,
+      MKT_NAME AS mktName,
+      LIST_SECTOR_NAME AS listSectorName,
+      LIST_STATUS AS listStatus,
+      LIST_DATE AS listDate,
+      LIST_ENDDATE AS listEnddate,
+      SPECIAL_TYPE_REF AS specialTypeRef,
+      SPECIAL_TYPE_NAME AS specialTypeName
+    FROM
+      LZ_GPA_TMP_STK
+    WHERE
+      1 = 1
+      <if test="mtime != null">
+        AND MTIME = #{mtime}
+      </if>
+      <if test="innerCode != null">
+        AND INNER_CODE = #{innerCode}
+      </if>
+      <if test="stockcode != null">
+        AND STOCKCODE = #{stockcode}
+      </if>
+      <if test="stocksname != null">
+        AND STOCKSNAME = #{stocksname}
+      </if>
+      <if test="lzjfCode != null">
+        AND LZJF_CODE = #{lzjfCode}
+      </if>
+      <if test="comcode != null">
+        AND COMCODE = #{comcode}
+      </if>
+      <if test="cname != null">
+        AND CNAME = #{cname}
+      </if>
+      <if test="stkTypeName != null">
+        AND STK_TYPE_NAME = #{stkTypeName}
+      </if>
+      <if test="stkStypeName != null">
+        AND STK_STYPE_NAME = #{stkStypeName}
+      </if>
+      <if test="mktType != null">
+        AND MKT_TYPE = #{mktType}
+      </if>
+      <if test="mktName != null">
+        AND MKT_NAME = #{mktName}
+      </if>
+      <if test="listSectorName != null">
+        AND LIST_SECTOR_NAME = #{listSectorName}
+      </if>
+      <if test="listStatus != null">
+        AND LIST_STATUS = #{listStatus}
+      </if>
+      <if test="listDate != null">
+        AND LIST_DATE = #{listDate}
+      </if>
+      <if test="listEnddate != null">
+        AND LIST_ENDDATE = #{listEnddate}
+      </if>
+      <if test="specialTypeRef != null">
+        AND SPECIAL_TYPE_REF = #{specialTypeRef}
+      </if>
+      <if test="specialTypeName != null">
+        AND SPECIAL_TYPE_NAME = #{specialTypeName}
+      </if>
+    LIMIT #{_pagesize}
+    OFFSET #{_skiprows}
+  </select>
+  <!-- 检索件数 -->
+  <select id="selectCount" parameterType="com.lz.stock.model.LzGpaTmpStk" resultType="int" >
+    SELECT
+      COUNT(0)
+    FROM
+      LZ_GPA_TMP_STK
+    WHERE
+      1 = 1
+      <if test="mtime != null">
+        AND MTIME = #{mtime}
+      </if>
+      <if test="innerCode != null">
+        AND INNER_CODE = #{innerCode}
+      </if>
+      <if test="stockcode != null">
+        AND STOCKCODE = #{stockcode}
+      </if>
+      <if test="stocksname != null">
+        AND STOCKSNAME = #{stocksname}
+      </if>
+      <if test="lzjfCode != null">
+        AND LZJF_CODE = #{lzjfCode}
+      </if>
+      <if test="comcode != null">
+        AND COMCODE = #{comcode}
+      </if>
+      <if test="cname != null">
+        AND CNAME = #{cname}
+      </if>
+      <if test="stkTypeName != null">
+        AND STK_TYPE_NAME = #{stkTypeName}
+      </if>
+      <if test="stkStypeName != null">
+        AND STK_STYPE_NAME = #{stkStypeName}
+      </if>
+      <if test="mktType != null">
+        AND MKT_TYPE = #{mktType}
+      </if>
+      <if test="mktName != null">
+        AND MKT_NAME = #{mktName}
+      </if>
+      <if test="listSectorName != null">
+        AND LIST_SECTOR_NAME = #{listSectorName}
+      </if>
+      <if test="listStatus != null">
+        AND LIST_STATUS = #{listStatus}
+      </if>
+      <if test="listDate != null">
+        AND LIST_DATE = #{listDate}
+      </if>
+      <if test="listEnddate != null">
+        AND LIST_ENDDATE = #{listEnddate}
+      </if>
+      <if test="specialTypeRef != null">
+        AND SPECIAL_TYPE_REF = #{specialTypeRef}
+      </if>
+      <if test="specialTypeName != null">
+        AND SPECIAL_TYPE_NAME = #{specialTypeName}
+      </if>
+  </select>
+</mapper>

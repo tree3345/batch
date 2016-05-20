@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+http://www.springframework.org/schema/context 
+http://www.springframework.org/schema/context/spring-context-3.0.xsd 
+http://www.springframework.org/schema/mvc 
+http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+	<!-- 开启注解配置 -->
+	<context:annotation-config />
+
+	<bean id="SpringApplicationContextAware" class="com.lz.batch.SpringApplicationContextAware" />
+
+	<!-- 自动扫描controller包下的所有类，使其认为spring mvc的控制器 -->
+	<context:component-scan base-package="com.lz.*.controller" />
+	<context:component-scan base-package="com.lzjf.security.service" />
+
+	<!-- 添加注解驱动 -->
+	<!-- <mvc:annotation-driven /> -->
+	<!-- HandlerMapping -->
+	<bean
+		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
+		<property name="interceptors">
+			<list>
+				<bean class="com.lzjf.interceptor.LogInterceptor" />
+				<!--<bean class="com.lzjff.interceptor.SecurityInterceptor">
+				</bean>-->
+				<bean class="com.lzjf.interceptor.SessionTimeoutInterceptor">
+					<property name="allowUrls">
+						<list>
+							<!-- 白名单 -->
+							<value>/batch/run</value>
+							<value>/p2p/payRespondOrdId</value>
+						</list>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<!-- 启动Spring MVC的注解功能，完成请求和注解POJO的映射 -->
+	<bean
+		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<bean id="stringHttpMessageConverter"
+					class="org.springframework.http.converter.StringHttpMessageConverter" />
+				<bean id="formHttpMessageConverter"
+					class="org.springframework.http.converter.FormHttpMessageConverter" />
+				<bean id="byteArrayMessageConverter"
+					class="org.springframework.http.converter.ByteArrayHttpMessageConverter" />
+				<bean id="bufferedImageHttpMessageConverter"
+					class="org.springframework.http.converter.BufferedImageHttpMessageConverter" />
+				<!-- 避免IE执行AJAX时,返回JSON出现下载文件 -->
+				<bean id="jacksonMessageConverter"
+					class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+			</list>
+		</property>
+		<property name="webBindingInitializer">
+			<bean
+				class="org.springframework.web.bind.support.ConfigurableWebBindingInitializer">
+				<property name="conversionService">
+					<bean
+						class="org.springframework.format.support.FormattingConversionServiceFactoryBean" />
+				</property>
+			</bean>
+		</property>
+	</bean>
+
+	<!-- 静态文件路径 -->
+	<!-- <mvc:resources mapping="/img/**" location="/img/**" /> -->
+
+	<!-- 对模型视图名称的解析，即在模型视图名称添加前后缀 -->
+	<bean
+		class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+		<!-- 设置为true以忽略对Accept Header的支持 -->
+		<!-- <property name="ignoreAcceptHeader" value="true" /> -->
+		<!-- 在没有扩展名时即: "/user/1" 时的默认展现形式 -->
+		<!-- <property name="defaultContentType" value="text/html" /> -->
+
+		<!-- 扩展名至mimeType的映射,即 /user.json => application/json -->
+		<!-- <property name="mediaTypes"> -->
+		<!-- <map> -->
+		<!-- <entry key="json" value="application/json" /> -->
+		<!-- <entry key="xml" value="application/xml" /> -->
+		<!-- </map> -->
+		<!-- </property> -->
+		<!-- 用于开启 /userinfo/123?format=json 的支持 -->
+		<!-- <property name="favorParameter" value="false" /> -->
+
+		<property name="contentNegotiationManager">
+			<bean class="org.springframework.web.accept.ContentNegotiationManager">
+				<constructor-arg>
+					<bean
+						class="org.springframework.web.accept.PathExtensionContentNegotiationStrategy">
+						<constructor-arg>
+							<map>
+								<entry key="json" value="application/json" />
+								<entry key="xml" value="application/xml" />
+							</map>
+						</constructor-arg>
+					</bean>
+				</constructor-arg>
+			</bean>
+		</property>
+
+		<property name="defaultViews">
+			<list>
+				<!-- for application/json -->
+				<bean
+					class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" />
+				<!-- for application/xml -->
+				<!-- <bean class="org.springframework.web.servlet.view.xml.MarshallingView" 
+					> <property name="marshaller"> <bean class="org.springframework.oxm.xstream.XStreamMarshaller"/> 
+					</property> </bean> -->
+				<!-- XML View -->
+				<bean class="org.springframework.web.servlet.view.xml.MarshallingView">
+					<constructor-arg>
+						<bean class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+							<property name="packagesToScan">
+								<list>
+									<value>documentLoader.domain</value>
+								</list>
+							</property>
+						</bean>
+					</constructor-arg>
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass"
+			value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/jsp/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+
+	<bean id="exceptionResolver" class="com.lzjf.resolver.CustomHandlerExceptionResolver">
+		<property name="exceptionMappings">
+			<props>
+				<prop key="java.io.IOException">error/500</prop>
+				<prop key="java.lang.NullPointerException">error/powerError</prop>
+				<prop
+					key="org.springframework.web.multipart.MaxUploadSizeExceededException">error/FileUploadError</prop>
+				<prop key="java.lang.Throwable">error/powerError</prop>
+			</props>
+		</property>
+	</bean>
+	<!-- i18n国际化 -->
+	<!-- <mvc:interceptors> -->
+	<!-- <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor"> -->
+	<!-- <property name="paramName" value="local"></property> -->
+	<!-- </bean> -->
+	<!-- </mvc:interceptors> -->
+
+	<!-- <bean id="localeResolver" -->
+	<!-- class="org.springframework.web.servlet.i18n.SessionLocaleResolver"> -->
+	<!-- <property name="defaultLocale" value="zh_CN" /> -->
+	<!-- </bean> -->
+
+	<!-- <bean id="messageSource" -->
+	<!-- class="org.springframework.context.support.ResourceBundleMessageSource"> -->
+	<!-- <property name="basename" value="com.lzjff.i18n.messages" /> -->
+	<!-- <property name="basenames"> -->
+	<!-- <list> -->
+	<!-- <value>classpath:com.lzjff.i18n.messages</value> -->
+	<!-- <value>classpath:com.lzjff.i18n.messages_en_US</value> -->
+	<!-- <value>classpath:com.lzjff.i18n.messages_zh_CN</value> -->
+	<!-- <value>classpath:com.lzjff.i18n.messages_zh_TW</value> -->
+	<!-- </list> -->
+	<!-- </property> -->
+	<!-- <property name="useCodeAsDefaultMessage" value="true" /> -->
+	<!-- <property name="fallbackToSystemLocale" value="false" /> -->
+	<!-- </bean> -->
+
+<!-- 	<bean id="securityService" class="com.lzjff.security.service.impl.SecurityServiceImpl"> -->
+<!-- 		<property name="errorResponseService" ref="errorResponseService" /> -->
+<!-- 	</bean> -->
+<!-- 	<bean id="errorResponseService" class="com.lzjff.security.service.impl.ErrorResponseServiceImpl" /> -->
+</beans>

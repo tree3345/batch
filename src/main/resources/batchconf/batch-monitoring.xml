@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean class="org.springframework.jmx.export.MBeanExporter">
+		<property name="beans">
+			<map>
+				<entry key="spring:service=batch,bean=jobOperator">
+					<bean class="org.springframework.aop.framework.ProxyFactoryBean">
+						<property name="target" ref="jobOperator" />
+						<property name="interceptorNames" value="exceptionTranslator" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+		<property name="assembler">
+			<bean
+				class="org.springframework.jmx.export.assembler.InterfaceBasedMBeanInfoAssembler">
+				<property name="interfaceMappings">
+					<map>
+						<entry key="spring:service=batch,bean=jobOperator"
+							value="org.springframework.batch.core.launch.JobOperator" />
+					</map>
+				</property>
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="exceptionTranslator"
+		class="org.springframework.batch.core.launch.support.RuntimeExceptionTranslator" />
+
+	<bean id="jobOperator"
+		class="org.springframework.batch.core.launch.support.SimpleJobOperator">
+		<property name="jobRepository" ref="jobRepository" />
+		<property name="jobLauncher" ref="jobLauncher" />
+		<property name="jobRegistry" ref="jobRegistry" />
+		<property name="jobExplorer" ref="jobExplorer" />
+	</bean>
+	
+</beans>

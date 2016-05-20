@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+	<!-- 配置RestTemplate -->
+	<!--Http client Factory -->
+	<bean id="httpClientFactory"
+		class="org.springframework.http.client.SimpleClientHttpRequestFactory">
+		<property name="connectTimeout" value="10000" />
+		<property name="readTimeout" value="10000" />
+	</bean>
+
+	<!--RestTemplate -->
+	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
+		<constructor-arg ref="httpClientFactory" />
+		<property name="messageConverters">
+			<list>
+				<bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter" />
+				<bean class="org.springframework.http.converter.FormHttpMessageConverter" />
+				<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+					<constructor-arg value="UTF-8"></constructor-arg>
+				</bean>
+				<bean class="org.springframework.http.converter.xml.SourceHttpMessageConverter" />
+				<bean class="org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter" />
+				<bean class="org.springframework.http.converter.xml.XmlAwareFormHttpMessageConverter" />
+				<bean
+					class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+					<property name="supportedMediaTypes" value="application/json" />
+				</bean>
+
+			</list>
+		</property>
+	</bean>
+
+	<!-- 增加定时quartz job -->
+	<!-- 执行spring batch job -->
+	<bean id="runBatchJob" class="com.lz.batch.service.impl.BatchJobRunServiceImpl">
+	</bean>
+
+	<!-- 增加定时quartz job -->
+	<bean id="addQuartzJob" class="com.lz.batch.service.impl.QuartzJobAddServiceImpl">
+		<property name="scheduler" ref="scheduleReportFactory" />
+	</bean>
+	<!-- 删除定时quartz job -->
+	<bean id="removeQuartzJob" class="com.lz.batch.service.impl.QuartzJobRemoveServiceImpl">
+		<property name="scheduler" ref="scheduleReportFactory" />
+	</bean>
+	<!-- 修改定时quartz job -->
+	<bean id="modifyQuartzJob" class="com.lz.batch.service.impl.QuartzJobModifyServiceImpl">
+		<property name="scheduler" ref="scheduleReportFactory" />
+		<property name="quartzUtils" ref="quartzUt" />
+	</bean>
+	<!-- 查询定时quartz job -->
+	<bean id="queryQuartzJob" class="com.lz.batch.service.impl.QuartzJobQueryServiceImpl"/>
+
+	<bean id="userHb_batch_class" class="com.lz.batch.job.qzjob.businessQzJob.UserHbQzJob"/>
+	<bean id="lllsgRollOut_batch_class" class="com.lz.batch.job.qzjob.businessQzJob.SgRollOutQzJob"/>
+
+	<!--spring_batch job-->
+	<bean id="common_batch" class="com.lz.batch.job.springbatchjob.commonJob.CommonBatchJob">
+		<property name="launcher" ref="jobLauncher" />
+	</bean>
+	<bean id="quartzUt" class="com.lz.batch.utils.QuartzUtils">
+	</bean>
+
+</beans>

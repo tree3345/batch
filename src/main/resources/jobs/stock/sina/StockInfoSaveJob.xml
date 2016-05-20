@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/batch"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.springframework.org/schema/batch
+    http://www.springframework.org/schema/batch/spring-batch-3.0.xsd
+    http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
+    <!--sina股票信息保存-->
+    <job id="stockSaveJob" restartable="false">
+        <!-- 1.每支股票行情-->
+        <step id="stockSaveStep">
+            <tasklet task-executor="taskExecutor" throttle-limit="5">
+                <chunk reader="stockCodesReader" processor="stockDataReqProcessor" writer="stockDataWriter"
+                       commit-interval="1000">
+                </chunk>
+            </tasklet>
+        </step>
+    </job>
+    <!--股票信息-->
+    <beans:bean id="stockCodesReader" class="org.mybatis.spring.batch.MyBatisPagingItemReader" scope="step">
+        <beans:property name="queryId" value="com.lz.stock.mapper.StockCodeBaseMapper.selectStockCodes"/>
+        <beans:property name="sqlSessionFactory" ref="sqlMapClient"/>
+        <beans:property name="pageSize" value="#{jobParameters['pageSize_']}"/>
+    </beans:bean>
+
+    <beans:bean id="stockDataReqProcessor" class="com.lz.stock.step.StockDataReqProcessor" scope="step">
+    </beans:bean>
+    <beans:bean id="stockDataWriter" class="org.springframework.batch.item.file.FlatFileItemWriter" scope="step">
+        <beans:property name="resource" value="file:#{jobParameters['stock.file']}"/>
+        <beans:property name="lineAggregator">
+            <beans:bean class="org.springframework.batch.item.file.transform.PassThroughLineAggregator"/>
+        </beans:property>
+        <beans:property name="lineSeparator" value=""/>
+        <beans:property name="encoding" value="GBK"/><!--文件编码-->
+        <beans:property name="appendAllowed" value="false"/><!--是否在原文件后增加-->
+        <beans:property name="shouldDeleteIfExists" value="true"/><!--文件如果存在，先删除再创建-->
+        <beans:property name="headerCallback" ref="headerCopier" />
+    </beans:bean>
+    <beans:bean id="headerCopier"  class="com.lz.stock.step.HeaderCopyCallback">
+        <beans:property name="header" value="${sina_stock_header}"/>
+    </beans:bean>
+
+</beans:beans>

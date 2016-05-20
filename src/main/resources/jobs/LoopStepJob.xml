@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/batch"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.springframework.org/schema/batch
+    http://www.springframework.org/schema/batch/spring-batch-3.0.xsd
+    http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
+
+    <job id="loopStepJob" restartable="false">
+        <step id="stepOne" next="multipleFileProcess.decider">
+            <tasklet ref="getCodesTasklet"/>
+        </step>
+        <decision decider="limitDecider" id="multipleFileProcess.decider">
+            <next on="CONTINUE" to="multipleFileProcess.step"/>
+            <end on="COMPLETED"/>
+        </decision>
+        <step id="multipleFileProcess.step" next="multipleFileProcess.decider">
+            <!--<job ref="generateJenFileItemJob" job-parameters-extractor="myParametersExtractor"/>-->
+            <tasklet ref="testTasklet" task-executor="taskExecutor" throttle-limit="4"/>
+        </step>
+
+    </job>
+    <beans:bean id="testTasklet" class="com.lz.generation.step.TestTasklet">
+    </beans:bean>
+    <beans:bean id="limitDecider" class="com.lz.generation.step.LimitDecider">
+        <beans:property name="limit" value="9" />
+    </beans:bean>
+    <beans:bean id="myParametersExtractor" class="org.springframework.batch.core.step.job.DefaultJobParametersExtractor"/>
+    <beans:bean id="getCodesTasklet" class="com.lz.generation.step.GetCodesTasklet"/>
+
+</beans:beans>

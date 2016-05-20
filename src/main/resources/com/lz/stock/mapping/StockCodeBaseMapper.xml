@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lz.stock.mapper.StockCodeBaseMapper">
+    <!-- 插入 -->
+    <insert id="insert" parameterType="com.lz.stock.model.StockCodeBase">
+    INSERT INTO
+      STOCK_CODE_BASE
+    (
+      stock_code,
+      group_flag
+    ) VALUES (
+      #{stockCode},
+      #{groupFlag}
+    )
+  </insert>
+    <!-- 删除通过主键 -->
+    <delete id="deleteByPrimaryKey" parameterType="String">
+    DELETE
+    FROM
+      STOCK_CODE_BASE
+    WHERE
+      stock_code = #{stockCode}
+  </delete>
+    <!-- 单件更新通过主键(部分更新) -->
+    <update id="updateByPrimaryKey" parameterType="com.lz.stock.model.StockCodeBase">
+        UPDATE
+        STOCK_CODE_BASE
+        <set>
+            <if test="groupFlag != null">
+                group_flag = #{groupFlag},
+            </if>
+        </set>
+        WHERE
+        stock_code = #{stockCode}
+    </update>
+    <!-- 单件更新通过主键(全更新) -->
+    <update id="updateAllByPrimaryKey" parameterType="com.lz.stock.model.StockCodeBase">
+    UPDATE
+      STOCK_CODE_BASE
+    SET
+      group_flag = #{groupFlag}
+    WHERE
+      stock_code = #{stockCode}
+  </update>
+    <!-- 单件检索通过主键 -->
+    <select id="selectOneByPrimaryKey" parameterType="String" resultType="com.lz.stock.model.StockCodeBase">
+    SELECT
+      stock_code AS stockCode,
+      group_flag AS groupFlag
+    FROM
+      STOCK_CODE_BASE
+    WHERE
+      stock_code = #{stockCode}
+  </select>
+    <!-- 检索列表 -->
+    <select id="selectList" parameterType="com.lz.stock.model.StockCodeBase"
+            resultType="com.lz.stock.model.StockCodeBase">
+        SELECT
+        stock_code AS stockCode,
+        group_flag AS groupFlag
+        FROM
+        STOCK_CODE_BASE
+        WHERE
+        1 = 1
+        <if test="stockCode != null">
+            AND stock_code = #{stockCode}
+        </if>
+        <if test="groupFlag != null">
+            AND group_flag = #{groupFlag}
+        </if>
+    </select>
+    <select id="selectStockCodes" parameterType="com.lz.stock.model.StockCodeBase"
+            resultType="com.lz.stock.model.StockCodeBase">
+        SELECT
+            GROUP_CONCAT(stock.stock_code) AS stockCode,
+            stock.group_flag AS groupFlag
+        FROM
+            `STOCK_CODE_BASE` stock
+        GROUP BY
+            groupFlag
+          LIMIT #{_pagesize}
+          OFFSET #{_skiprows}
+    </select>
+    <!-- 检索件数 -->
+    <select id="selectCount" parameterType="com.lz.stock.model.StockCodeBase" resultType="int">
+        SELECT
+        COUNT(0)
+        FROM
+        STOCK_CODE_BASE
+        WHERE
+        1 = 1
+        <if test="stockCode != null">
+            AND stock_code = #{stockCode}
+        </if>
+        <if test="groupFlag != null">
+            AND group_flag = #{groupFlag}
+        </if>
+    </select>
+    <update id="truncateStockCodes">
+    TRUNCATE TABLE STOCK_CODE_BASE
+  </update>
+    <!--read use-->
+    <select id="dbDate" resultType="date">
+        SELECT NOW()
+    </select>
+</mapper>

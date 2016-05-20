@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lz.qz.mapper.QrtzCronTriggersMapper">
+  <!-- 插入 -->
+  <insert id="insert" parameterType="com.lz.qz.model.QrtzCronTriggers" >
+    INSERT INTO
+      QRTZ_CRON_TRIGGERS
+    (
+      SCHED_NAME,
+      TRIGGER_NAME,
+      TRIGGER_GROUP,
+      CRON_EXPRESSION,
+      TIME_ZONE_ID
+    ) VALUES (
+      #{schedName},
+      #{triggerName},
+      #{triggerGroup},
+      #{cronExpression},
+      #{timeZoneId}
+    )
+  </insert>
+  <!-- 删除通过主键 -->
+  <delete id="deleteByPrimaryKey" parameterType="com.lz.qz.model.QrtzCronTriggers" >
+    DELETE
+    FROM
+      QRTZ_CRON_TRIGGERS
+    WHERE
+      SCHED_NAME = #{schedName}
+    AND
+      TRIGGER_NAME = #{triggerName}
+    AND
+      TRIGGER_GROUP = #{triggerGroup}
+  </delete>
+  <!-- 单件更新通过主键(部分更新) -->
+  <update id="updateByPrimaryKey" parameterType="com.lz.qz.model.QrtzCronTriggers" >
+    UPDATE
+      QRTZ_CRON_TRIGGERS
+    <set>
+      <if test="cronExpression != null">
+        CRON_EXPRESSION = #{cronExpression},
+      </if>
+      <if test="timeZoneId != null">
+        TIME_ZONE_ID = #{timeZoneId},
+      </if>
+    </set>
+    WHERE
+      SCHED_NAME = #{schedName}
+    AND
+      TRIGGER_NAME = #{triggerName}
+    AND
+      TRIGGER_GROUP = #{triggerGroup}
+  </update>
+  <!-- 单件更新通过主键(全更新) -->
+  <update id="updateAllByPrimaryKey" parameterType="com.lz.qz.model.QrtzCronTriggers" >
+    UPDATE
+      QRTZ_CRON_TRIGGERS
+    SET
+      CRON_EXPRESSION = #{cronExpression},
+      TIME_ZONE_ID = #{timeZoneId}
+    WHERE
+      SCHED_NAME = #{schedName}
+    AND
+      TRIGGER_NAME = #{triggerName}
+    AND
+      TRIGGER_GROUP = #{triggerGroup}
+  </update>
+  <!-- 单件检索通过主键 -->
+  <select id="selectOneByPrimaryKey" parameterType="com.lz.qz.model.QrtzCronTriggers" resultType="com.lz.qz.model.QrtzCronTriggers" >
+    SELECT
+      SCHED_NAME AS schedName,
+      TRIGGER_NAME AS triggerName,
+      TRIGGER_GROUP AS triggerGroup,
+      CRON_EXPRESSION AS cronExpression,
+      TIME_ZONE_ID AS timeZoneId
+    FROM
+      QRTZ_CRON_TRIGGERS
+    WHERE
+      SCHED_NAME = #{schedName}
+    AND
+      TRIGGER_NAME = #{triggerName}
+    AND
+      TRIGGER_GROUP = #{triggerGroup}
+  </select>
+  <!-- 检索列表 -->
+  <select id="selectList" parameterType="map" resultType="com.lz.qz.model.QrtzCronTriggers" >
+    SELECT
+      SCHED_NAME AS schedName,
+      TRIGGER_NAME AS triggerName,
+      TRIGGER_GROUP AS triggerGroup,
+      CRON_EXPRESSION AS cronExpression,
+      TIME_ZONE_ID AS timeZoneId
+    FROM
+      QRTZ_CRON_TRIGGERS
+    WHERE
+      1 = 1
+      <if test="schedName != null">
+        AND SCHED_NAME = #{schedName}
+      </if>
+      <if test="triggerName != null">
+        AND TRIGGER_NAME = #{triggerName}
+      </if>
+      <if test="triggerGroup != null">
+        AND TRIGGER_GROUP = #{triggerGroup}
+      </if>
+      <if test="cronExpression != null">
+        AND CRON_EXPRESSION = #{cronExpression}
+      </if>
+      <if test="timeZoneId != null">
+        AND TIME_ZONE_ID = #{timeZoneId}
+      </if>
+  </select>
+  <!-- 检索件数 -->
+  <select id="selectCount" parameterType="com.lz.qz.model.QrtzCronTriggers" resultType="int" >
+    SELECT
+      COUNT(0)
+    FROM
+      QRTZ_CRON_TRIGGERS
+    WHERE
+      1 = 1
+      <if test="schedName != null">
+        AND SCHED_NAME = #{schedName}
+      </if>
+      <if test="triggerName != null">
+        AND TRIGGER_NAME = #{triggerName}
+      </if>
+      <if test="triggerGroup != null">
+        AND TRIGGER_GROUP = #{triggerGroup}
+      </if>
+      <if test="cronExpression != null">
+        AND CRON_EXPRESSION = #{cronExpression}
+      </if>
+      <if test="timeZoneId != null">
+        AND TIME_ZONE_ID = #{timeZoneId}
+      </if>
+  </select>
+</mapper>

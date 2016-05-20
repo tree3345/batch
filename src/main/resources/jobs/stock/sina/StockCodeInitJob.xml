@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/batch"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.springframework.org/schema/batch
+    http://www.springframework.org/schema/batch/spring-batch-3.0.xsd
+    http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
+    <!--每天开市前执行一次 -->
+    <job id="stockCodeInitJob" restartable="false">
+        <!--1.清空stock_Code_Base数据-->
+        <step id="stockCodeTruncateStep" next="stockCodeInitStep">
+            <tasklet ref="deleteTableTasklet"/>
+        </step>
+        <!--2.初始化股票代码信息-->
+        <step id="stockCodeInitStep">
+            <tasklet task-executor="taskExecutor" throttle-limit="5">
+                <chunk reader="lzGpaTmpStkReader" processor="lzGpaTmpStkProcessor" writer="stockCodeBaseWriter"
+                       commit-interval="#{jobParameters['pageSize_']}">
+                </chunk>
+            </tasklet>
+        </step>
+    </job>
+    <beans:bean id="deleteTableTasklet" class="com.lz.stock.step.DeleteTableTasklet">
+        <beans:property name="dataSource" ref="dataSource"/>
+        <beans:property name="sql" value="truncate table STOCK_CODE_BASE"/>
+    </beans:bean>
+
+    <beans:bean id="lzGpaTmpStkReader" class="org.mybatis.spring.batch.MyBatisPagingItemReader" scope="step">
+        <beans:property name="queryId" value="com.lz.stock.mapper.LzGpaTmpStkMapper.selectList"/>
+        <beans:property name="sqlSessionFactory" ref="sqlMapClient"/>
+        <beans:property name="pageSize" value="#{jobParameters['pageSize_']}"/>
+    </beans:bean>
+
+    <beans:bean id="lzGpaTmpStkProcessor" class="com.lz.stock.step.LzGpaTmpStkProcessor" scope="step">
+        <beans:property name="pageSize" value="#{jobParameters['pageSize_']}"/>
+    </beans:bean>
+    <beans:bean id="stockCodeBaseWriter" class="org.mybatis.spring.batch.MyBatisBatchItemWriter" scope="step">
+        <beans:property name="statementId" value="com.lz.stock.mapper.StockCodeBaseMapper.insert"/>
+        <beans:property name="sqlSessionFactory" ref="sqlMapClient"/>
+    </beans:bean>
+
+</beans:beans>

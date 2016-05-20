@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/batch"
+			 xmlns:beans="http://www.springframework.org/schema/beans"
+			 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			 xsi:schemaLocation="http://www.springframework.org/schema/batch
+    http://www.springframework.org/schema/batch/spring-batch-3.0.xsd
+    http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
+
+	<job id="partitionJdbcJob" xmlns="http://www.springframework.org/schema/batch">
+		<step id="partitionnerStep">
+			<partition step="doSomethingstep1" partitioner="partitioner">
+				<handler grid-size="3" task-executor="partitionerTaskExecutor"></handler>
+			</partition>
+		</step>
+	</job>
+
+	<beans:bean id="partitioner" class="com.lz.generation.step.ColumnRangePartitioner" scope="step">
+		<beans:property name="dataSource" ref="dataSource"/>
+		<beans:property name="table" value="LZJF_FACT.FACTOR_TABLE" />
+		<beans:property name="column" value="FACTOR_CODE" />
+	</beans:bean>
+
+	<!--<bean id="taskExecutor" class="org.springframework.core.task.SimpleAsyncTaskExecutor" />-->
+
+	<step id="doSomethingstep1">
+		<tasklet ref="testTasklet"/>
+	</step>
+	<beans:bean id="testTasklet1" class="com.lz.generation.step.TestTasklet" scope="step" autowire-candidate="false" >
+	</beans:bean>
+	<beans:bean id="partitionerTaskExecutor"
+		  class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<beans:property name="corePoolSize" value="10" />
+		<beans:property name="maxPoolSize" value="16" />
+		<beans:property name="waitForTasksToCompleteOnShutdown" value="true"/>
+		<beans:property name="threadFactory" ref="threadFactory"/>
+		<!--<beans:property name="queueCapacity" value="400"/>-->
+	</beans:bean>
+	<beans:bean id="threadFactory" class="org.springframework.scheduling.concurrent.CustomizableThreadFactory">
+	</beans:bean>
+	<!--<beans:bean id="getFactorCodesTasklet" class="com.lz.generation.step.GetFactorCodesTasklet"/>-->
+
+</beans:beans>

@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lz.mapper.FactorTableMapper">
+    <!-- 插入 -->
+    <insert id="insert" parameterType="com.lz.model.FactorTable" useGeneratedKeys="true" keyProperty="factorId">
+    INSERT INTO
+      FACTOR_TABLE
+    (
+      ENABLE,
+      DATA_BEGIN_DATE,
+      DATA_END_DATE,
+      LAST_GENERATE_DATE,
+      REGENERATE_DATE,
+      FILE_NAME,
+      FACTOR_NAME,
+      FACTOR_CODE,
+      FACTOR_CATEGORY_ID,
+      DESCRIPTION,
+      REMARK,
+      IS_SUBSCRIBE,
+      MAX_SEQ,
+      FACTOR_GROUP,
+      FACTOR_EXECUTE_FLAG,
+      DATA_EXECUTE_FLAG,
+      DATA_UPDATE_DATE
+    ) VALUES (
+      #{enable},
+      #{dataBeginDate},
+      #{dataEndDate},
+      #{lastGenerateDate},
+      #{regenerateDate},
+      #{fileName},
+      #{factorName},
+      #{factorCode},
+      #{factorCategoryId},
+      #{description},
+      #{remark},
+      #{isSubscribe},
+      #{maxSeq},
+      #{factorGroup},
+      #{factorExecuteFlag},
+      #{dataExecuteFlag},
+      #{dataUpdateDate}
+    )
+  </insert>
+    <insert id="insertCalendar" parameterType="date">
+        insert into cal_table value(#{endDate})
+    </insert>
+    <!-- 删除通过主键 -->
+    <delete id="deleteByPrimaryKey" parameterType="Integer">
+    DELETE
+    FROM
+      FACTOR_TABLE
+    WHERE
+      FACTOR_ID = #{factorId}
+  </delete>
+    <!-- 单件更新通过主键(部分更新) -->
+    <update id="updateByPrimaryKey" parameterType="com.lz.model.FactorTable">
+        UPDATE
+        FACTOR_TABLE
+        <set>
+            <if test="enable != null">
+                ENABLE = #{enable},
+            </if>
+            <if test="dataBeginDate != null">
+                DATA_BEGIN_DATE = #{dataBeginDate},
+            </if>
+            <if test="dataEndDate != null">
+                DATA_END_DATE = #{dataEndDate},
+            </if>
+            <if test="lastGenerateDate != null">
+                LAST_GENERATE_DATE = #{lastGenerateDate},
+            </if>
+            <if test="regenerateDate != null">
+                REGENERATE_DATE = #{regenerateDate},
+            </if>
+            <if test="fileName != null">
+                FILE_NAME = #{fileName},
+            </if>
+            <if test="factorName != null">
+                FACTOR_NAME = #{factorName},
+            </if>
+            <if test="factorCode != null">
+                FACTOR_CODE = #{factorCode},
+            </if>
+            <if test="factorCategoryId != null">
+                FACTOR_CATEGORY_ID = #{factorCategoryId},
+            </if>
+            <if test="description != null">
+                DESCRIPTION = #{description},
+            </if>
+            <if test="remark != null">
+                REMARK = #{remark},
+            </if>
+            <if test="isSubscribe != null">
+                IS_SUBSCRIBE = #{isSubscribe},
+            </if>
+            <if test="maxSeq != null">
+                MAX_SEQ = #{maxSeq},
+            </if>
+            <if test="factorGroup != null">
+                FACTOR_GROUP = #{factorGroup},
+            </if>
+            <if test="factorExecuteFlag != null">
+                FACTOR_EXECUTE_FLAG = #{factorExecuteFlag},
+            </if>
+            <if test="dataExecuteFlag != null">
+                DATA_EXECUTE_FLAG = #{dataExecuteFlag},
+            </if>
+            <if test="dataUpdateDate != null">
+                DATA_UPDATE_DATE = #{dataUpdateDate},
+            </if>
+        </set>
+        WHERE
+        FACTOR_ID = #{factorId}
+    </update>
+    <!-- 单件更新通过主键(全更新) -->
+    <update id="updateAllByPrimaryKey" parameterType="com.lz.model.FactorTable">
+    UPDATE
+      FACTOR_TABLE
+    SET
+      ENABLE = #{enable},
+      DATA_BEGIN_DATE = #{dataBeginDate},
+      DATA_END_DATE = #{dataEndDate},
+      LAST_GENERATE_DATE = #{lastGenerateDate},
+      REGENERATE_DATE = #{regenerateDate},
+      FILE_NAME = #{fileName},
+      FACTOR_NAME = #{factorName},
+      FACTOR_CODE = #{factorCode},
+      FACTOR_CATEGORY_ID = #{factorCategoryId},
+      DESCRIPTION = #{description},
+      REMARK = #{remark},
+      IS_SUBSCRIBE = #{isSubscribe},
+      MAX_SEQ = #{maxSeq},
+      FACTOR_GROUP = #{factorGroup},
+      FACTOR_EXECUTE_FLAG = #{factorExecuteFlag},
+      DATA_EXECUTE_FLAG = #{dataExecuteFlag},
+      DATA_UPDATE_DATE = #{dataUpdateDate}
+    WHERE
+      FACTOR_ID = #{factorId}
+  </update>
+    <!-- 单件检索通过主键 -->
+    <select id="selectOneByPrimaryKey" parameterType="Integer" resultType="com.lz.model.FactorTable">
+    SELECT
+      FACTOR_ID AS factorId,
+      ENABLE AS enable,
+      DATA_BEGIN_DATE AS dataBeginDate,
+      DATA_END_DATE AS dataEndDate,
+      LAST_GENERATE_DATE AS lastGenerateDate,
+      REGENERATE_DATE AS regenerateDate,
+      FILE_NAME AS fileName,
+      FACTOR_NAME AS factorName,
+      FACTOR_CODE AS factorCode,
+      FACTOR_CATEGORY_ID AS factorCategoryId,
+      DESCRIPTION AS description,
+      REMARK AS remark,
+      IS_SUBSCRIBE AS isSubscribe,
+      MAX_SEQ AS maxSeq,
+      FACTOR_GROUP AS factorGroup,
+      FACTOR_EXECUTE_FLAG AS factorExecuteFlag,
+      DATA_EXECUTE_FLAG AS dataExecuteFlag,
+      DATA_UPDATE_DATE AS dataUpdateDate
+    FROM
+      FACTOR_TABLE
+    WHERE
+      FACTOR_ID = #{factorId}
+  </select>
+    <select id="selectHeader" parameterType="map" resultType="map">
+        SELECT SORT_INDICATOR as sortIndicator,HEADER_CODE as headerCode FROM LZJF_FACT.FACTOR_HEADER
+    </select>
+    <select id="selectJenDataList" parameterType="map" resultType="map">
+        SELECT DATE_FORMAT(_cal.cal_date,'%Y%m%d') date,jentb.CODE code ,jentb.VALUE value from (select cal_date from cal_table where cal_date>=DATE_SUB(#{dataBeginDate},INTERVAL 1 day) and cal_date&lt;=#{dataEndDate}) as _cal LEFT JOIN
+        (SELECT	date,
+        GROUP_CONCAT(CODE) AS CODE, GROUP_CONCAT(VALUE) AS VALUE FROM (
+        (SELECT (CASE WHEN max(date) &lt;#{dataBeginDate} THEN #{dataBeginDate} ELSE date END) date, code, value FROM ${factorCode} WHERE date &lt;=#{dataBeginDate} GROUP BY code)
+        UNION ALL
+        (SELECT date,code,value FROM ${factorCode} WHERE date>#{dataBeginDate} and date&lt;=#{dataEndDate})
+        ) a GROUP BY
+        date
+        ) jentb ON _cal.cal_date = jentb.date order by _cal.cal_date
+        LIMIT #{_pagesize}
+        OFFSET #{_skiprows}
+  </select>
+    <!-- 检索列表 -->
+    <select id="selectList" parameterType="com.lz.model.FactorTable" resultType="com.lz.model.FactorTable">
+        SELECT
+        FACTOR_ID AS factorId,
+        ENABLE AS enable,
+        DATA_BEGIN_DATE AS dataBeginDate,
+        DATA_END_DATE AS dataEndDate,
+        LAST_GENERATE_DATE AS lastGenerateDate,
+        REGENERATE_DATE AS regenerateDate,
+        FILE_NAME AS fileName,
+        FACTOR_NAME AS factorName,
+        FACTOR_CODE AS factorCode,
+        FACTOR_CATEGORY_ID AS factorCategoryId,
+        DESCRIPTION AS description,
+        REMARK AS remark,
+        IS_SUBSCRIBE AS isSubscribe,
+        MAX_SEQ AS maxSeq,
+        FACTOR_GROUP AS factorGroup,
+        FACTOR_EXECUTE_FLAG AS factorExecuteFlag,
+        DATA_EXECUTE_FLAG AS dataExecuteFlag,
+        DATA_UPDATE_DATE AS dataUpdateDate
+        FROM
+        FACTOR_TABLE
+        WHERE
+        1 = 1
+        <if test="factorId != null">
+            AND FACTOR_ID = #{factorId}
+        </if>
+        <if test="enable != null">
+            AND ENABLE = #{enable}
+        </if>
+        <if test="dataBeginDate != null">
+            AND DATA_BEGIN_DATE = #{dataBeginDate}
+        </if>
+        <if test="dataEndDate != null">
+            AND DATA_END_DATE = #{dataEndDate}
+        </if>
+        <if test="lastGenerateDate != null">
+            AND LAST_GENERATE_DATE = #{lastGenerateDate}
+        </if>
+        <if test="regenerateDate != null">
+            AND REGENERATE_DATE = #{regenerateDate}
+        </if>
+        <if test="fileName != null">
+            AND FILE_NAME = #{fileName}
+        </if>
+        <if test="factorName != null">
+            AND FACTOR_NAME = #{factorName}
+        </if>
+        <if test="factorCode != null">
+            AND FACTOR_CODE = #{factorCode}
+        </if>
+        <if test="factorCategoryId != null">
+            AND FACTOR_CATEGORY_ID = #{factorCategoryId}
+        </if>
+        <if test="description != null">
+            AND DESCRIPTION = #{description}
+        </if>
+        <if test="remark != null">
+            AND REMARK = #{remark}
+        </if>
+        <if test="isSubscribe != null">
+            AND IS_SUBSCRIBE = #{isSubscribe}
+        </if>
+        <if test="maxSeq != null">
+            AND MAX_SEQ = #{maxSeq}
+        </if>
+        <if test="factorGroup != null">
+            AND FACTOR_GROUP = #{factorGroup}
+        </if>
+        <if test="factorExecuteFlag != null">
+            AND FACTOR_EXECUTE_FLAG = #{factorExecuteFlag}
+        </if>
+        <if test="dataExecuteFlag != null">
+            AND DATA_EXECUTE_FLAG = #{dataExecuteFlag}
+        </if>
+        <if test="dataUpdateDate != null">
+            AND DATA_UPDATE_DATE = #{dataUpdateDate}
+        </if>
+    </select>
+    <!-- 检索件数 -->
+    <select id="selectCount" parameterType="com.lz.model.FactorTable" resultType="int">
+        SELECT
+        COUNT(0)
+        FROM
+        FACTOR_TABLE
+        WHERE
+        1 = 1
+        <if test="factorId != null">
+            AND FACTOR_ID = #{factorId}
+        </if>
+        <if test="enable != null">
+            AND ENABLE = #{enable}
+        </if>
+        <if test="dataBeginDate != null">
+            AND DATA_BEGIN_DATE = #{dataBeginDate}
+        </if>
+        <if test="dataEndDate != null">
+            AND DATA_END_DATE = #{dataEndDate}
+        </if>
+        <if test="lastGenerateDate != null">
+            AND LAST_GENERATE_DATE = #{lastGenerateDate}
+        </if>
+        <if test="regenerateDate != null">
+            AND REGENERATE_DATE = #{regenerateDate}
+        </if>
+        <if test="fileName != null">
+            AND FILE_NAME = #{fileName}
+        </if>
+        <if test="factorName != null">
+            AND FACTOR_NAME = #{factorName}
+        </if>
+        <if test="factorCode != null">
+            AND FACTOR_CODE = #{factorCode}
+        </if>
+        <if test="factorCategoryId != null">
+            AND FACTOR_CATEGORY_ID = #{factorCategoryId}
+        </if>
+        <if test="description != null">
+            AND DESCRIPTION = #{description}
+        </if>
+        <if test="remark != null">
+            AND REMARK = #{remark}
+        </if>
+        <if test="isSubscribe != null">
+            AND IS_SUBSCRIBE = #{isSubscribe}
+        </if>
+        <if test="maxSeq != null">
+            AND MAX_SEQ = #{maxSeq}
+        </if>
+        <if test="factorGroup != null">
+            AND FACTOR_GROUP = #{factorGroup}
+        </if>
+        <if test="factorExecuteFlag != null">
+            AND FACTOR_EXECUTE_FLAG = #{factorExecuteFlag}
+        </if>
+        <if test="dataExecuteFlag != null">
+            AND DATA_EXECUTE_FLAG = #{dataExecuteFlag}
+        </if>
+        <if test="dataUpdateDate != null">
+            AND DATA_UPDATE_DATE = #{dataUpdateDate}
+        </if>
+    </select>
+<select id="selectTest" parameterType="map">
+    select * from lzjf_fact.factor_table where factor_id = #{minId}
+</select>
+
+</mapper>
