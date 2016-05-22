@@ -455,7 +455,7 @@
                         </goals>
                         <configuration>
                             <sources>
-                                <!-- 可以通过在这里添加多个source节点，来添加任意多个源文件夹 -->
+                                <!-- 可以通过在这里添加多个source节点，来添加任意多个源文件夹***** -->
                                 <source>${basedir}/src/main/java</source>
                             </sources>
                         </configuration>
