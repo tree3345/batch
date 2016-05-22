@@ -4,7 +4,7 @@ package com.lz.constant;
 * @author zhujinhua
 * @version create time：2015年12月14日 下午4:09:56
 */
-public final class FactorTableGeneratorConstant {
+public final class LzjfConstants {
 
 
 	
@@ -57,6 +57,8 @@ public final class FactorTableGeneratorConstant {
 	public static final String JEN_TABLE = "lzjf_jenData";
 	public static final String ISOPEN = "ISOPEN";
 	public static final String MINTIMESTAMP ="19900101000000" ;
+
+	public static final String LINE_SEPARATOR =System.getProperty("line.separator") ;
 
 	public enum CodeType {
 		INDX_CODE_SORT_INDICATOR(0,"INDX_CODE_SORT_INDICATOR"),

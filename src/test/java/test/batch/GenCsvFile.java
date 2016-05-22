@@ -13,8 +13,8 @@ public class GenCsvFile extends BatchJobTest{
     public void aaaa(){
         System.out.println(11111);
     }
-    @Override
+   /* @Override
     public void runJob() {
 
-    }
+    }*/
 }

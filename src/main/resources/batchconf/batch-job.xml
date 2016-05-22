@@ -12,5 +12,8 @@
     <import resource="classpath*:jobs/stock/sina/StockInfoSaveJob.xml"/>
     <import resource="classpath*:jobs/stock/sina/BkStockInfoSaveJob.xml"/>
     <import resource="classpath*:jobs/stock/ifeng/StockInfoSaveJob.xml"/>
+    <import resource="classpath*:jobs/stock/yahoo/StockInfoSaveJob.xml"/>
+    <import resource="classpath*:jobs/stock/eastMoney/StockInfoSaveJob.xml"/>
+    <import resource="classpath*:jobs/stock/eastMoney/StockTopJob.xml"/>
 
 </beans>

@@ -31,10 +31,10 @@ public class HuoqiJobTest extends BatchJobTest {
         }
     }
 
-    @Override
+    /*@Override
     public void runJob() {
     }
-
+*/
 
 
 }

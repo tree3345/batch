@@ -32,9 +32,9 @@ public class GenCSVFileJobTest extends BatchJobTest {
         System.out.println("运行时间： " + (endTime - startTime) + "ms");
     }
 
-    @Override
+   /* @Override
     public void runJob() {
     }
-
+*/
 
 }

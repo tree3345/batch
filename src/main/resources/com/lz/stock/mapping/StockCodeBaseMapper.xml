@@ -103,4 +103,10 @@
     <select id="dbDate" resultType="date">
         SELECT NOW()
     </select>
+
+    <select id="selectCategories" resultType="string">
+        SELECT category FROM STOCK_CATEGORY
+        LIMIT #{_pagesize}
+          OFFSET #{_skiprows}
+    </select>
 </mapper>

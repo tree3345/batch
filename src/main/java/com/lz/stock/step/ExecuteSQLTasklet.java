@@ -10,7 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 /**
  * Created by Administrator on 2016/5/20.
  */
-class DeleteTableTasklet implements Tasklet {
+class ExecuteSQLTasklet implements Tasklet {
 
     private DruidDataSource dataSource;
     private String sql;

@@ -1,6 +1,6 @@
 package com.lz.generation.step;
 
-import com.lz.constant.FactorTableGeneratorConstant;
+import com.lz.constant.LzjfConstants;
 import org.apache.log4j.Logger;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
@@ -24,10 +24,10 @@ public class SwitchListener implements StepExecutionListener {
 
         log.info("    step 'next'=" + nextStepType);
 
-        if (FactorTableGeneratorConstant.JEN_TYPE_0.equals(nextStepType)) {
-            return new ExitStatus(FactorTableGeneratorConstant.JEN_TYPE_0);
+        if (LzjfConstants.JEN_TYPE_0.equals(nextStepType)) {
+            return new ExitStatus(LzjfConstants.JEN_TYPE_0);
         } else {
-            return new ExitStatus(FactorTableGeneratorConstant.JEN_TYPE_1);
+            return new ExitStatus(LzjfConstants.JEN_TYPE_1);
         }
     }
 }

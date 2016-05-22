@@ -19,8 +19,7 @@ public abstract class BatchJobTest {
 
     private Logger logger = Logger.getLogger(BatchJobTest.class);
     
-    public abstract void runJob();
-    
+
     public void runJob(String jobid, HashMap<String, String> hm) {
 
         ApplicationContext c = ApplicationInfo.getApplicationContext();

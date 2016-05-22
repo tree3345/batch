@@ -12,7 +12,7 @@ File Encoding         : 65001
 
 Date: 2016-05-21 06:52:58
 */
-
+use stockdb;
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------

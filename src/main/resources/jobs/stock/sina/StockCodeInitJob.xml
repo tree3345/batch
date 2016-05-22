@@ -21,7 +21,7 @@
             </tasklet>
         </step>
     </job>
-    <beans:bean id="deleteTableTasklet" class="com.lz.stock.step.DeleteTableTasklet">
+    <beans:bean id="deleteTableTasklet" class="com.lz.stock.step.ExecuteSQLTasklet">
         <beans:property name="dataSource" ref="dataSource"/>
         <beans:property name="sql" value="truncate table STOCK_CODE_BASE"/>
     </beans:bean>
