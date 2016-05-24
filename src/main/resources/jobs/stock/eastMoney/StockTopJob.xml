@@ -9,7 +9,7 @@
     <!--股票信息保存-->
     <job id="eastMoneyStockTopJob" restartable="false">
         <!-- 1.股票行情-->
-        <step id="eastMoneyStockSaveStep">
+        <step id="eastMoneyStockTopSaveStep">
             <tasklet>
                 <chunk reader="eastMoneyStockTopReader" processor="eastMoneyStockTopDataReqProcessor" writer="eastMoneyStockTopDataWriter"
                        commit-interval="100">
